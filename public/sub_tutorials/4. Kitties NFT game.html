@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4. Kitties NFT game</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#errors">Errors</a></li>
+<li><a href="#best-practice">Best practice</a>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="errors">Errors</h1>
+<pre><code>  error: expected `::`
+     --&gt; /Users/macos/Documents/substrate/kitties/runtime/src/lib.rs:296:35
+      |
+  296 |         SubstrateKitties: pallet_kitties,
+      |                                         ^
+</code></pre>
+<blockquote>
+<p>tag: <a href="https://github.com/paritytech/substrate.git?tag=monthly-2021-10#bf9683ee">https://github.com/paritytech/substrate.git?tag=monthly-2021-10#bf9683ee</a></p>
+</blockquote>
+<p>Change from:</p>
+<pre><code>SubstrateKitties: pallet_kitties,
+</code></pre>
+<p>to</p>
+<pre><code>SubstrateKitties: pallet_kitties::{},
+</code></pre>
+<h1 id="best-practice">Best practice</h1>
+<h3 id="scaffold-kitty-struct---storage-best-practice">Scaffold Kitty struct -&gt; Storage best practice</h3>
+<p>This comes in handy when trying to optimize for storage reads and writes so our runtime can perform less read/writes to update multiple values. Read more about storage best practices  <a href="https://docs.substrate.io/v3/runtime/storage/#best-practices">here</a>.</p>
+
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2. Add Nicks Pallet</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#add-nicks-pallet">2. Add Nicks Pallet</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#nicks">Nicks</a>
+<ul>
+<li></li>
+</ul>
+</li>
+<li><a href="#interact-with-pallet">Interact with Pallet</a>
+<ul>
+<li></li>
+</ul>
+</li>
+<li><a href="#common-error">Common error:</a></li>
+<li><a href="#create-new-pallet--local-pallet-for-development">Create new pallet & Local pallet for development</a></li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="add-nicks-pallet">2. Add Nicks Pallet</h1>
+<p><a href="https://docs.substrate.io/tutorials/v3/add-a-pallet/">https://docs.substrate.io/tutorials/v3/add-a-pallet/</a></p>
+<p>This note is additional content only, you need to use <code>docs.substrate.io</code> as your primary learning materials.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p><strong>What is pallets?</strong></p>
+<pre><code>FRAME
+	Pallet 1
+	Pallet 2
+	...
+</code></pre>
+<p>See FRAME and pallets:</p>
+<ul>
+<li><a href="https://docs.substrate.io/tutorials/v3/proof-of-existence/#build-a-custom-pallet">Tutorial 3: build-a-custom-pallet</a></li>
+<li><a href="https://docs.substrate.io/v3/getting-started/overview/#usage">Docs: Overview: 3 level of usage</a></li>
+</ul>
+<p><strong>Node template</strong></p>
+<p><strong><a href="http://crates.io">crates.io</a></strong><br>
+<a href="https://crates.io/">crates.io</a>: upload cargo packages to <em>crates</em><br>
+cargo -&gt; crates<br>
+npm -&gt; <a href="http://npmjs.com">npmjs.com</a></p>
+<h1 id="nicks">Nicks</h1>
+<p><strong>What</strong>:<br>
+The Nicks pallet allows blockchain users to pay a deposit to reserve a nickname and associate it with an account they control.</p>
+<p>TOML Convention:<br>
+Group <code>[dependencies.pallet*</code> into a cluster for more readable convinient</p>
+<pre><code>[dependencies.pallet-nicks]  
+# =&gt; default features to be understand are the features defined for the std native  
+# Rust binary listed in the features section.  
+default-features = false  
+# use the pallet-nicks crate from the `paritytech/substrate` repository  
+git = 'https://github.com/paritytech/substrate.git'  
+# Git tag in the repo  
+tag = 'monthly-2021-10'  
+version = '4.0.0-dev'
+</code></pre>
+<p><strong>default-features = false</strong><br>
+=&gt; default features to be understand are the features defined for the <a href="https://doc.rust-lang.org/std/"><code>std</code></a> native Rust binary listed in the <code>features</code> section.</p>
+<blockquote>
+<p>Substrate runtime compiles to both a native Rust <a href="https://doc.rust-lang.org/std/"><code>std</code></a> binary and a <a href="https://webassembly.org/">WebAssembly (Wasm)</a> binary</p>
+</blockquote>
+<br>
+<br>
+Check that the new dependencies resolve correctly by running the following command:
+<pre><code>cargo check -p node-template-runtime
+</code></pre>
+<p>This cmd take 7mins for the first time!!<br>
+36s for the 2nd time, it only checks the new dep, compiles new dep or effected modules</p>
+<h3 id="additional-official-docs">Additional Official docs</h3>
+<p><a href="https://docs.substrate.io/how-to-guides/v3/basics/pallet-integration/">https://docs.substrate.io/how-to-guides/v3/basics/pallet-integration/</a></p>
+<h1 id="interact-with-pallet">Interact with Pallet</h1>
+<p><a href="https://github.com/paritytech/substrate/tree/master/frame">https://github.com/paritytech/substrate/tree/master/frame</a></p>
+<p>Nicks</p>
+<ul>
+<li>api docs: <a href="https://docs.substrate.io/rustdocs/latest/pallet_nicks/pallet/trait.Config.html#associatedtype.Event">https://docs.substrate.io/rustdocs/latest/pallet_nicks/pallet/trait.Config.html#associatedtype.Event</a></li>
+<li>implementation in runtime/src/lib.rs</li>
+<li>Cmd click to expose nick <a href="~/.cargo/git/checkouts/substrate-7e08433d4c370a21/bf9683e/frame/nicks/src/lib.rs">source code</a></li>
+<li>nick source code in github</li>
+<li>Cmd 7 to show pallet structure</li>
+</ul>
+<h3 id="use-pallet-interactor">Use Pallet Interactor</h3>
+<ul>
+<li>
+<p>Trying to produce TooShort &amp; TooLong Errors:</p>
+<blockquote>
+<p>Response: system:ExtrinsicFailed<br>
+[{“Module”:{“index”:“6”,“error”:“0”}},{“weight”:“50,000,000”,“class”:“Normal”,“paysFee”:“Yes”}]</p>
+</blockquote>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">[</span>
+  <span class="token comment">// ?</span>
+  <span class="token punctuation">{</span>
+    <span class="token string">"Module"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"index"</span><span class="token punctuation">:</span> <span class="token string">"6"</span><span class="token punctuation">,</span> <span class="token comment">// nicks module index == 6</span>
+      <span class="token string">"error"</span><span class="token punctuation">:</span> <span class="token string">"1"</span> <span class="token comment">// enum value of in nicks::Error</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token string">"weight"</span><span class="token punctuation">:</span> <span class="token string">"50,000,000"</span><span class="token punctuation">,</span>
+    <span class="token string">"class"</span><span class="token punctuation">:</span> <span class="token string">"Normal"</span><span class="token punctuation">,</span>
+    <span class="token string">"paysFee"</span><span class="token punctuation">:</span> <span class="token string">"Yes"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre>
+</li>
+<li>
+<p>setname with success with responses:</p>
+</li>
+</ul>
+<pre><code>system:ExtrinsicSuccess
+[{"weight":"50,000,000","class":"Normal","paysFee":"Yes"}]
+
+nicks:NameSet
+["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"]
+
+balances:Reserved
+["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY","100"]
+</code></pre>
+<ul>
+<li>
+<p>query the stored name:</p>
+<pre><code>// Alice in Borderland
+["0x416c69636520696e20426f726465726c616e64",100]
+</code></pre>
+<p>The return type is a tuple that contains two values:</p>
+<ul>
+<li>
+<p>The hex-encoded nickname for the Alice account.</p>
+</li>
+<li>
+<p>The amount that was reserved from Alice’s account to secure the nickname.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>[Q] What the heck is this?<br>
+<code>0x416c69636520696e20426f726465726c616e64</code><br>
+[A] =&gt; It’s <code>Alice in Borderland</code> was encoded by SCALE-codec<br>
+See the source code, it was set by <a href="https://docs.substrate.io/v3/advanced/storage/">StorageMap</a></p>
+<h3 id="sudo-pallet">Sudo pallet</h3>
+<h1 id="common-error">Common error:</h1>
+<p>Error: Always <code>sending....</code> in Pallet Interactor<br>
+Solution: You might be using a inject web wallet such as Polkawallet chrome extension, you might using this wallet to sign your transaction.</p>
+<h1 id="create-new-pallet--local-pallet-for-development">Create new pallet &amp; Local pallet for development</h1>
+<p>Use pallet template:<br>
+<a href="https://github.com/paritytech/substrate/tree/master/frame/example">https://github.com/paritytech/substrate/tree/master/frame/example</a></p>
+<blockquote>
+<p>The Example: A simple example of a FRAME pallet demonstrating concepts, APIs and structures common to most FRAME runtimes.</p>
+</blockquote>
+<p>Cargo local dep<br>
+<a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#specifying-path-dependencies">https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#specifying-path-dependencies</a></p>
+<pre><code>[dependencies.pallet-nicks-clone]  
+default-features = false  
+path = "../pallets/nicks-copy"
+</code></pre>
+<p>Might need to update rustc to latest stable version to avoid :<br>
+<a href="https://stackoverflow.com/a/51687419/4984888">https://stackoverflow.com/a/51687419/4984888</a></p>
+<p>Modify nicks-copy pallet dependency path:</p>
+<ul>
+<li>by default: nicks dependency load dependencies from local relative path =&gt; all standard modules are relative to nicks</li>
+<li>IF you clone =&gt; this pallet is not standard module any more, make sure to modify that relative path / or change to load from git</li>
+</ul>
+<p>Change dispatchable function name of as your wish</p>
+
+    </div>
+  </div>
+</body>
+
+</html>

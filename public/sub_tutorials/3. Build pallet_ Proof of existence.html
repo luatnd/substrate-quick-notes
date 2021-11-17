@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3. Build pallet: Proof of existence</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#build-a-proof-of-existence-dapp">3. Build a proof of existence dApp</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#proof-of-existence">Proof of existence</a>
+<ul>
+<li><a href="#hashes">hashes</a></li>
+<li><a href="#account-signatures">account signatures</a></li>
+</ul>
+</li>
+<li><a href="#custom-pallet">Custom pallet</a></li>
+<li><a href="#common-errors">Common errors</a></li>
+<li><a href="#frontend-interaction">Frontend interaction</a></li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="build-a-proof-of-existence-dapp">3. Build a proof of existence dApp</h1>
+<p>This note is additional content only, you need to use <code>docs.substrate.io</code> as your primary learning materials.</p>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>Complete 2. Add nicks pallet</p>
+<h1 id="proof-of-existence">Proof of existence</h1>
+<ul>
+<li>What: is an approach</li>
+<li>to validating the authenticity and ownership of a digital object</li>
+<li>How: by using the object information stored on the blockchain<br>
+=&gt; particular object existed at a specific date and time</li>
+</ul>
+<h2 id="hashes">hashes</h2>
+<p>File =&gt; hash string =&gt; save on blockchain<br>
+File changes =&gt; hash changes</p>
+<p>So:</p>
+<ul>
+<li>[Q] How can I know that the file exists on blockchain?</li>
+</ul>
+<blockquote>
+<p>users can prove the validity of a file by computing the hash and comparing that hash with the hash stored on chain.</p>
+<pre><code>file_is_valid = file_hash === hash_stored_on_blockchain
+</code></pre>
+</blockquote>
+<p>NOTE: Blockchain save the hash only, the file will be save somewhere else.<br>
+The purpose is validate the file exist, not to save the entire file content</p>
+<h2 id="account-signatures">account signatures</h2>
+<ul>
+<li>[Q] Who created the file?</li>
+<li>[A] The blockchain records the account in transaction <code>data</code></li>
+</ul>
+<h1 id="custom-pallet">Custom pallet</h1>
+<blockquote>
+<p>NOTE:<br>
+The macros: #![cfg_attr(not(feature = “std”), no_std)]<br>
+All of the pallets used in a runtime must be set to compile with the no_std features.</p>
+</blockquote>
+<ul>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> TODO: Why???
+<blockquote>
+<p>you <em>cannot</em> use the <code>std</code> library for pallet development</p>
+<p>Instead, the proof-of-existence pallet uses the <a href="https://docs.substrate.io/rustdocs/latest/sp_std/index.html">sp-std crate</a> to declare the <code>Vec&lt;u8&gt;</code> type under the <code>mod pallet</code> section:</p>
+</blockquote>
+</li>
+</ul>
+<p>Basic structure</p>
+<ul>
+<li>Scalfolding</li>
+<li>Emit event</li>
+<li>Storage</li>
+<li>Error handle</li>
+</ul>
+<h1 id="common-errors">Common errors</h1>
+<pre><code>#[pallet::generate_storage_info]
+**error[E0277]****: the trait bound `Vec&lt;u8&gt;: MaxEncodedLen` is not satisfied**
+</code></pre>
+<blockquote>
+<p>Fixed: Remove  the #[pallet::generate_storage_info]</p>
+</blockquote>
+<p>I don’t know what to do with the <code>generate_storage_info</code></p>
+<h1 id="frontend-interaction">Frontend interaction</h1>
+<ul>
+<li>Create claim for Alice</li>
+<li>Create claim for Polkadotjs</li>
+<li>Query by file hash</li>
+<li>Further dev: Query by account</li>
+<li>Revoke</li>
+</ul>
+
+    </div>
+  </div>
+</body>
+
+</html>

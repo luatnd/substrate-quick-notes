@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheatsheet</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#todo">TODO:</a></li>
+<li><a href="#common">Common</a>
+<ul>
+<li>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#pallets">Pallets</a>
+<ul>
+<li>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="todo">TODO:</h1>
+<ul>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Push to github readme</li>
+</ul>
+<h1 id="common">Common</h1>
+<h4 id="check-cargo-err">Check cargo err</h4>
+<pre><code>cargo check -p node-template-runtime
+</code></pre>
+<p>You can use IDE feature instead, eg: Jetbrain auto detect cargo.</p>
+<h4 id="build-pallet-only">Build pallet only</h4>
+<pre><code>cargo build -p pallet-kitties
+</code></pre>
+<h4 id="build-release">Build release</h4>
+<pre><code>cargo build --release
+</code></pre>
+<p>It will rebuild only new cargo.<br>
+If rust / cargo version was changed =&gt; Rebuild all</p>
+<h4 id="start-node">Start node</h4>
+<pre><code>./target/release/node-template --dev --tmp
+</code></pre>
+<p>Many options here: <code>./target/release/node-template --help</code></p>
+<p>Frequent options:</p>
+<ul>
+<li><code>--tmp</code></li>
+</ul>
+<h1 id="pallets">Pallets</h1>
+<h4 id="add-new-pallet--local-development">Add new pallet &amp; local development</h4>
+<p>See <code>tutorials/2. Add Nicks Pallet</code></p>
+<p><a href="https://substrate-starterkit.mvpworkshop.co/#/workspace">https://substrate-starterkit.mvpworkshop.co/#/workspace</a></p>
+
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rust Ownership</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li><a href="#scope">Scope</a></li>
+<li><a href="#primitive-type">Primitive type</a></li>
+<li><a href="#heap--stack">Heap & stack</a>
+<ul>
+<li><a href="#move">Move</a></li>
+<li><a href="#clone-heap">Clone (Heap)</a></li>
+<li><a href="#copy-stack-only">Copy (Stack only)</a></li>
+</ul>
+</li>
+<li><a href="#ownership-and-functions">Ownership and Functions</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h1 id="scope">Scope</h1>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token comment">// this scope</span>
+<span class="token punctuation">{</span>
+  <span class="token comment">// a deeper scope</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="primitive-type">Primitive type</h1>
+<p>Was stored on stack</p>
+<h1 id="heap--stack">Heap &amp; stack</h1>
+<p>Original docs <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ways-variables-and-data-interact-move">here</a></p>
+<h2 id="move">Move</h2>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-01.svg" alt="String in memory"><br>
+<em>Figure 4-1: Representation in memory of a  <code>String</code>  holding the value  <code>"hello"</code>  bound to  <code>s1</code></em></p>
+<ul>
+<li>The <code>len</code> is how much memory, in bytes, the contents of the <code>String</code> is currently using.</li>
+<li>The <code>capacity</code> is the total amount of memory</li>
+</ul>
+<p>Eg: TODO</p>
+<br>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token keyword">let</span> s2 <span class="token operator">=</span> s1<span class="token punctuation">;</span>
+</code></pre>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-02.svg" alt="s1 and s2 pointing to the same value"><br>
+<em>Figure 4-2: Representation in memory of the variable  <code>s2</code>  that has a copy of the pointer, length, and capacity of  <code>s1</code></em></p>
+<br>
+<p>[Q] So why copy the pointer instead of heap data?</p>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-03.svg" alt="s1 and s2 to two places"></p>
+<p><em>Figure 4-3: Another possibility for what  <code>s2 = s1</code>  might do if Rust copied the heap data as well</em></p>
+<p>[A] Because 1:</p>
+<blockquote>
+<p><code>s2 = s1</code> could be very expensive in terms of runtime performance if the data on the heap were large.</p>
+</blockquote>
+<p>[A] Because 2:</p>
+<blockquote>
+<p>when <code>s2</code> and <code>s1</code> go out of scope, they will both try to free the same memory</p>
+<p>This is known as a <em>double free</em> error and is one of the memory safety bugs.<br>
+Freeing memory twice can lead to memory corruption, which can potentially lead to security vulnerabilities.</p>
+</blockquote>
+<p>So to ensure memory safety and effection =&gt; Rust do <code>data move</code></p>
+<p>Common <code>data move</code> error:</p>
+<pre><code>  | 
+2 | let s1 = String::from("hello");
+  | 	-- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+3 | let s2 = s1; 
+  | 		 -- value moved here 
+4 | 
+5 | println!("{}, world!", s1); 
+  | 					   ^^ value borrowed here after move
+</code></pre>
+<p>The error is very clear!!</p>
+<p>So the real result in Rust:<br>
+<img src="https://doc.rust-lang.org/book/img/trpl04-04.svg" alt="s1 moved to s2"></p>
+<p><em>Figure 4-4: Representation in memory after  <code>s1</code>  has been invalidated</em></p>
+<br>
+<h2 id="clone-heap">Clone (Heap)</h2>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> s2 <span class="token operator">=</span> s1<span class="token punctuation">.</span><span class="token function">clone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"s1 = {}, s2 = {}"</span><span class="token punctuation">,</span> s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>It’s copy heap data at <code>Figure 4-3</code></p>
+<h2 id="copy-stack-only">Copy (Stack only)</h2>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> y <span class="token operator">=</span> x<span class="token punctuation">;</span>
+
+<span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"x = {}, y = {}"</span><span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>types such as integers that have a known size at compile time are stored entirely on the stack,</p>
+<p>so copies of the actual values are quick to make</p>
+<p><strong><code>Copy</code> trait</strong><br>
+If a type implements the <code>Copy</code> trait, an older variable is still usable after assignment</p>
+<p><strong><code>Drop</code> trait</strong><br>
+Rust won’t let us annotate a type with the <code>Copy</code> trait if the type, or any of its parts, has implemented the <code>Drop</code> trait<br>
+==&gt; we’ll get a compile-time error</p>
+<p>[Q] So what types implement the <code>Copy</code> trait?<br>
+[A] check the documentation for the given type<br>
+[A] as a general rule,</p>
+<ul>
+<li>any group of simple scalar values can implement <code>Copy</code></li>
+<li>and nothing that requires allocation</li>
+</ul>
+<p>Some popular types in the <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#stack-only-data-copy">docs</a></p>
+<h1 id="ownership-and-functions">Ownership and Functions</h1>
+<p>BIG NOTE:</p>
+<blockquote>
+<p>The semantics for <code>passing a value to a function</code> are similar to those for <code>assigning a value to a variable</code>.<br>
+Passing a variable to a function will move or copy, just as assignment does</p>
+</blockquote>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">fn</span> <span class="token function">take_and_drop</span><span class="token punctuation">(</span>s<span class="token punctuation">:</span> String<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">// move pointer to s</span>
+	<span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"{}"</span><span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>		 <span class="token comment">// </span>
+<span class="token punctuation">}</span>							 <span class="token comment">// eof =&gt; call DROP =&gt; The backing memory is freed</span>
+</code></pre>
+<br>
+<blockquote>
+<p>Return value will not call drop and allow go to outter scope</p>
+</blockquote>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">fn</span> <span class="token function">take_and_giveback</span><span class="token punctuation">(</span>s<span class="token punctuation">:</span> String<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">// move pointer to s</span>
+	<span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"{}"</span><span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>			 <span class="token comment">// </span>
+	s							 <span class="token comment">// return</span>
+<span class="token punctuation">}</span>								 <span class="token comment">// eof =&gt; go outter scope</span>
+</code></pre>
+<br>
+<p><strong>BIG PROBLEM</strong><br>
+Too tired to handle owner ship</p>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">fn</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span>s<span class="token punctuation">:</span> String<span class="token punctuation">)</span> <span class="token punctuation">-&gt;</span> <span class="token punctuation">(</span>String<span class="token punctuation">,</span> usize<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">(</span>s<span class="token punctuation">,</span> s<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> <span class="token punctuation">(</span>s2<span class="token punctuation">,</span> len<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>But this is too much ceremony and a lot of work for a concept that should be common.</p>
+<p>=&gt; Rust has a feature for this concept, called  <em>references</em> 👇</p>
+<h1 id="reference">Reference</h1>
+<p>[Q] Why reference?<br>
+[A] Plz see right above prolems!</p>
+<p>The new approach:</p>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">fn</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span>s<span class="token punctuation">:</span> <span class="token operator">&amp;</span>String<span class="token punctuation">)</span> <span class="token punctuation">-&gt;</span> usize <span class="token punctuation">{</span>
+	s<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> len <span class="token operator">=</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-05.svg" alt="&amp;String s pointing at String s1"></p>
+<p><em>Figure 4-5: A diagram of  <code>&amp;String s</code>  pointing at  <code>String s1</code></em></p>
+
+    </div>
+  </div>
+</body>
+
+</html>

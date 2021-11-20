@@ -17,13 +17,15 @@
 <li><a href="#primitive-type">Primitive type</a></li>
 <li><a href="#heap--stack">Heap & stack</a>
 <ul>
-<li><a href="#move">Move</a></li>
-<li><a href="#clone-heap">Clone (Heap)</a></li>
-<li><a href="#copy-stack-only">Copy (Stack only)</a></li>
+<li></li>
 </ul>
 </li>
 <li><a href="#ownership-and-functions">Ownership and Functions</a></li>
-<li><a href="#reference">Reference</a></li>
+<li><a href="#reference">Reference</a>
+<ul>
+<li></li>
+</ul>
+</li>
 </ul>
 
     </div>
@@ -40,7 +42,7 @@
 <p>Was stored on stack</p>
 <h1 id="heap--stack">Heap &amp; stack</h1>
 <p>Original docs <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#ways-variables-and-data-interact-move">here</a></p>
-<h2 id="move">Move</h2>
+<h3 id="move">Move</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p><img src="https://doc.rust-lang.org/book/img/trpl04-01.svg" alt="String in memory"><br>
@@ -86,14 +88,14 @@ Freeing memory twice can lead to memory corruption, which can potentially lead t
 <img src="https://doc.rust-lang.org/book/img/trpl04-04.svg" alt="s1 moved to s2"></p>
 <p><em>Figure 4-4: Representation in memory after  <code>s1</code>  has been invalidated</em></p>
 <br>
-<h2 id="clone-heap">Clone (Heap)</h2>
+<h3 id="clone-heap">Clone (Heap)</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> s2 <span class="token operator">=</span> s1<span class="token punctuation">.</span><span class="token function">clone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"s1 = {}, s2 = {}"</span><span class="token punctuation">,</span> s1<span class="token punctuation">,</span> s2<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>It’s copy heap data at <code>Figure 4-3</code></p>
-<h2 id="copy-stack-only">Copy (Stack only)</h2>
+<h3 id="copy-stack-only">Copy (Stack only)</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> x <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> y <span class="token operator">=</span> x<span class="token punctuation">;</span>
 
@@ -154,10 +156,16 @@ Too tired to handle owner ship</p>
 <span class="token punctuation">}</span>
 
 <span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">let</span> len <span class="token operator">=</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> len <span class="token operator">=</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p><img src="https://doc.rust-lang.org/book/img/trpl04-05.svg" alt="&amp;String s pointing at String s1"></p>
 <p><em>Figure 4-5: A diagram of  <code>&amp;String s</code>  pointing at  <code>String s1</code></em></p>
+<p>[Q] what if</p>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token function">calculate_length</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ok</span>
+<span class="token function">calculate_length</span><span class="token punctuation">(</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// what if?</span>
+</code></pre>
+<p>[A] TODO</p>
+<h3 id="mutable-references">Mutable References</h3>
 
     </div>
   </div>

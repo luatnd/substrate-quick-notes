@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rust Ownership</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+  <style>
+    @media (min-width: 500px) {
+      img {width: 50%; margin: 0 auto; display: block;}
+      img[alt="w40"] {width: 40%}
+      img[alt="w100"] {width: 100%}
+    }
+  </style>
 </head>
 
 <body class="stackedit">
@@ -17,13 +24,23 @@
 <li><a href="#primitive-type">Primitive type</a></li>
 <li><a href="#heap--stack">Heap & stack</a>
 <ul>
-<li></li>
+<li>
+<ul>
+<li><a href="#move">Move</a></li>
+<li><a href="#clone-heap">Clone (Heap)</a></li>
+<li><a href="#copy-stack-only">Copy (Stack only)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#ownership-and-functions">Ownership and Functions</a></li>
 <li><a href="#reference">Reference</a>
 <ul>
-<li></li>
+<li>
+<ul>
+<li><a href="#mutable-references">Mutable References</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -45,7 +62,7 @@
 <h3 id="move">Move</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p><img src="https://doc.rust-lang.org/book/img/trpl04-01.svg" alt="String in memory"><br>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-01.svg" alt="w40"><br>
 <em>Figure 4-1: Representation in memory of a  <code>String</code>  holding the value  <code>"hello"</code>  bound to  <code>s1</code></em></p>
 <ul>
 <li>The <code>len</code> is how much memory, in bytes, the contents of the <code>String</code> is currently using.</li>
@@ -158,7 +175,7 @@ Too tired to handle owner ship</p>
 <span class="token keyword">let</span> s1 <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> len <span class="token operator">=</span> <span class="token function">calculate_length</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p><img src="https://doc.rust-lang.org/book/img/trpl04-05.svg" alt="&amp;String s pointing at String s1"></p>
+<p><img src="https://doc.rust-lang.org/book/img/trpl04-05.svg" alt="w100"></p>
 <p><em>Figure 4-5: A diagram of  <code>&amp;String s</code>  pointing at  <code>String s1</code></em></p>
 <p>[Q] what if</p>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token function">calculate_length</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ok</span>

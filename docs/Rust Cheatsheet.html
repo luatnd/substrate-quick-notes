@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rust Cheatsheet</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+  <style>
+    @media (min-width: 500px) {
+      img {width: 50%; margin: 0 auto; display: block;}
+      img[alt="w40"] {width: 40%}
+      img[alt="w100"] {width: 100%}
+    }
+  </style>
 </head>
 
 <body class="stackedit">
@@ -15,15 +22,39 @@
 <ul>
 <li><a href="#official-docs">Official Docs</a>
 <ul>
-<li></li>
+<li>
+<ul>
+<li><a href="#another-source">Another source</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#common-data">Common Data</a>
 <ul>
-<li></li>
+<li>
+<ul>
+<li><a href="#primitive-type">Primitive type</a></li>
+<li><a href="#string">String</a></li>
+<li><a href="#arrays">Arrays</a></li>
+<li><a href="#vec">Vec</a></li>
+<li><a href="#tupple">Tupple</a></li>
+<li><a href="#enum">Enum</a></li>
+<li><a href="#struct">Struct</a></li>
 </ul>
 </li>
-<li><a href="#debugging">Debugging</a></li>
+</ul>
+</li>
+<li><a href="#debugging">Debugging</a>
+<ul>
+<li>
+<ul>
+<li><a href="#dev-env-version-info">Dev Env version info</a></li>
+<li><a href="#memory">Memory</a></li>
+<li><a href="#print-a-vector">Print a vector</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#error">Error</a></li>
 <li><a href="#testing">Testing</a></li>
 <li><a href="#rustdoc">Rustdoc</a></li>
@@ -67,6 +98,10 @@ Rust Reference <a href="https://doc.rust-lang.org/reference/procedural-macros.ht
 <p>Another iter() with O(?)</p>
 <pre><code>str.elem().nth(i).unwrap()
 str.chars().nth(i).unwrap()
+</code></pre>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token comment">// Fastest Access string elm at index 5, read more about Rust slice</span>
+<span class="token keyword">let</span> s <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello world"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>s<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">..</span><span class="token number">6</span><span class="token punctuation">]</span>
 </code></pre>
 <h3 id="arrays">Arrays</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> xs<span class="token punctuation">:</span> <span class="token punctuation">[</span>i32<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -132,7 +167,7 @@ str.chars().nth(i).unwrap()
 </code></pre>
 <p>return statement without <code>return</code> keyword</p>
 <h1 id="debugging">Debugging</h1>
-<p>Dev Env version info</p>
+<h3 id="dev-env-version-info">Dev Env version info</h3>
 <pre><code>rustc -V
 </code></pre>
 <p><a href="https://docs.substrate.io/v3/getting-started/installation/#rust-configuration-check">Rust configuration check</a></p>
@@ -160,7 +195,22 @@ active toolchain
 stable-x86_64-unknown-linux-gnu (default)
 rustc 1.50.0 (cb75ad5db 2021-02-10)
 </code></pre>
-<p>Print a vector</p>
+<h3 id="memory">Memory</h3>
+<pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> v <span class="token operator">=</span> <span class="token function">vec!</span><span class="token punctuation">[</span><span class="token string">'h'</span><span class="token punctuation">,</span> <span class="token string">'e'</span><span class="token punctuation">,</span> <span class="token string">'l'</span><span class="token punctuation">,</span> <span class="token string">'l'</span><span class="token punctuation">,</span> <span class="token string">'o'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token comment">// five elements times four bytes for each element</span>
+<span class="token function">assert_eq!</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">,</span> v<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> std<span class="token punctuation">:</span><span class="token punctuation">:</span>mem<span class="token punctuation">:</span><span class="token punctuation">:</span>size_of<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">&lt;</span>char<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> s <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// five elements times one byte per element</span>
+<span class="token function">assert_eq!</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> s<span class="token punctuation">.</span><span class="token function">len</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> std<span class="token punctuation">:</span><span class="token punctuation">:</span>mem<span class="token punctuation">:</span><span class="token punctuation">:</span>size_of<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token operator">&lt;</span>u8<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> s <span class="token operator">=</span> String<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"love: ❤️"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> v<span class="token punctuation">:</span> Vec<span class="token operator">&lt;</span>char<span class="token operator">&gt;</span> <span class="token operator">=</span> s<span class="token punctuation">.</span><span class="token function">chars</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">assert_eq!</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> std<span class="token punctuation">:</span><span class="token punctuation">:</span>mem<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">size_of_val</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>s<span class="token punctuation">[</span><span class="token punctuation">..</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">assert_eq!</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> std<span class="token punctuation">:</span><span class="token punctuation">:</span>mem<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">size_of_val</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>v<span class="token punctuation">[</span><span class="token punctuation">..</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="print-a-vector">Print a vector</h3>
 <pre class=" language-rust"><code class="prism  language-rust"><span class="token keyword">let</span> v2 <span class="token operator">=</span> <span class="token function">vec!</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">;</span> <span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token function">println!</span><span class="token punctuation">(</span><span class="token string">"{:?}"</span><span class="token punctuation">,</span> v2<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
